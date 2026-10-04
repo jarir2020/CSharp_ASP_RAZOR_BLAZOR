@@ -1,0 +1,56 @@
+# CSharp_ASP_RAZOR_BLAZOR
+
+## Summary
+
+This repository is a theory-first, beginner-friendly learning course for C#,
+.NET, ASP.NET Core, Entity Framework Core, MVC, Razor Pages, Blazor, testing,
+production operations, and application architecture.
+
+The code is organized as small phase projects. Each phase includes comments
+beside unfamiliar behavior, tests where practical, and a matching guide under
+guides/.
+
+## Primary documentation
+
+- [README.md](README.md): course overview, run commands, and project structure.
+- [plan.md](plan.md): full learning roadmap.
+- [guides/](guides/): theory guides for Phases 1 through 16.
+- [AGENTS.md](AGENTS.md): repository coding, documentation, and validation rules.
+
+## Phase projects
+
+- CSharpCore: C# fundamentals, modern C#, LINQ, async programming, and .NET fundamentals.
+- AspNetCoreFundamentals: HTTP, middleware, routing, configuration, and logging.
+- AspNetCoreWebApi: controller APIs, DTOs, validation, and ProblemDetails.
+- EntityFrameworkCoreLab: EF Core relationships, queries, transactions, and SQLite.
+- SecureAspNetCoreApi: Identity, JWT, roles, claims, policies, CORS, and rate limits.
+- RazorPagesLab: Razor Pages, forms, model binding, validation, and antiforgery.
+- MvcLab: MVC controllers, views, model binding, filters, and antiforgery.
+- BlazorLab: Blazor components, forms, state, lifecycle, and JavaScript interop.
+- AdvancedAspNetCoreLab: options, DI, caching, logging, and background services.
+- AdvancedWebLab: OpenAPI, health checks, uploads, streaming, versioning, WebSockets, and SignalR.
+- TestingLab: deterministic unit-test seams, fixtures, fakes, and API testing examples.
+- ProductionLab: configuration validation, JSON logging, health checks, Docker, hosting, migrations, and CI/CD.
+- ArchitectureLab: domain rules, CQRS, a mediator, repositories, unit of work, specifications, and vertical slices.
+
+## Validation boundary
+
+The intended target framework is .NET 10. The available local SDK may be older,
+so local fallback validation uses an explicit net9.0 target override where the
+project has no incompatible package dependency. Full .NET 10 builds and the
+complete test graph should run in an environment with the .NET 10 SDK.
+
+## Safety and secrets
+
+Do not place passwords, API keys, tokens, local environment files, database
+files, or deployment credentials in source control. Production examples use
+environment variables or secret-manager injection and report only whether a
+required secret is configured.
+
+## Suggested starting points
+
+1. Read plan.md.
+2. Read the guide for the phase being studied.
+3. Run the corresponding project.
+4. Read its comments and tests.
+5. Change one small behavior and rerun the focused validation.
