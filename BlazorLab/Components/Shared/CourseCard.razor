@@ -1,0 +1,23 @@
+<article class="card">
+    <p class="eyebrow">@Course.Level</p>
+    <h2>@Course.Title</h2>
+    <p>@Course.Description</p>
+    <button class="button button--secondary" type="button" @onclick="SelectCourse">
+        Select course
+    </button>
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public CourseSummary Course { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<CourseSummary> Selected { get; set; }
+
+    private Task SelectCourse()
+    {
+        // EventCallback lets the child notify its parent without knowing how
+        // the parent stores or displays the selected course.
+        return Selected.InvokeAsync(Course);
+    }
+}

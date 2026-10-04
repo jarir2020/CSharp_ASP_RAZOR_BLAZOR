@@ -1,0 +1,64 @@
+@page "/enroll"
+@inject LearningState LearningState
+
+<PageTitle>Course enrollment</PageTitle>
+
+<section class="form-card">
+    <p class="eyebrow">EditForm and validation</p>
+    <h1>Enroll in a course</h1>
+    <p>
+        Blazor binds these controls to a C# object and runs DataAnnotations
+        validation before calling the valid-submit handler.
+    </p>
+
+    <EditForm Model="Input" OnValidSubmit="Submit" FormName="course-enrollment">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-field">
+            <label for="full-name">Full name</label>
+            <InputText id="full-name" class="form-control" @bind-Value="Input.FullName" />
+            <ValidationMessage For="() => Input.FullName" />
+        </div>
+
+        <div class="form-field">
+            <label for="email">Email</label>
+            <InputText id="email" class="form-control" @bind-Value="Input.Email" />
+            <ValidationMessage For="() => Input.Email" />
+        </div>
+
+        <div class="form-field">
+            <label for="course">Course</label>
+            <InputSelect id="course" class="form-control" @bind-Value="Input.CourseId">
+                <option value="0">Choose a course</option>
+                @foreach (CourseSummary course in LearningState.Courses)
+                {
+                    <option value="@course.Id">@course.Title</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => Input.CourseId" />
+        </div>
+
+        <div class="form-field">
+            <label for="study-hours">Study hours per week</label>
+            <InputNumber id="study-hours" class="form-control" @bind-Value="Input.StudyHoursPerWeek" />
+            <ValidationMessage For="() => Input.StudyHoursPerWeek" />
+        </div>
+
+        <button class="button" type="submit">Submit enrollment</button>
+    </EditForm>
+
+    @if (LearningState.LastEnrollmentMessage is not null)
+    {
+        <p class="notice notice--success">@LearningState.LastEnrollmentMessage</p>
+    }
+</section>
+
+@code {
+    private EnrollmentInput Input { get; } = new();
+
+    private void Submit()
+    {
+        LearningState.RecordEnrollment(Input);
+    }
+}

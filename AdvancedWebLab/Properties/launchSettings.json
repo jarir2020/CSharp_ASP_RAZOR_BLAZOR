@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "AdvancedWebLab": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7489;http://localhost:5489",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

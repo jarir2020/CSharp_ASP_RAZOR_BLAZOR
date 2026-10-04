@@ -1,0 +1,35 @@
+@model BookListViewModel
+@{
+    ViewData["Title"] = "Books";
+}
+
+<section class="hero">
+    <p class="eyebrow">Controller + view model + Razor view</p>
+    <h1>MVC book catalog</h1>
+    <p>
+        The controller receives the request, prepares a view model, and passes
+        it to this Razor view.
+    </p>
+</section>
+
+<form class="search-form" asp-controller="Books" asp-action="Index" method="get">
+    <label asp-for="SearchTerm">Search by title or author</label>
+    <div class="search-row">
+        <input asp-for="SearchTerm" placeholder="Try ASP.NET or C#" />
+        <button class="button" type="submit">Search</button>
+    </div>
+</form>
+
+@if (!Model.HasResults)
+{
+    <p class="empty-state">No books matched <strong>@Model.SearchTerm</strong>.</p>
+}
+else
+{
+    <section class="card-grid" aria-label="Book results">
+        @foreach (BookCardViewModel book in Model.Books)
+        {
+            <partial name="_BookCard" model="book" />
+        }
+    </section>
+}

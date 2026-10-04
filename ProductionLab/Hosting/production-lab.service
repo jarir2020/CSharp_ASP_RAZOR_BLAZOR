@@ -1,0 +1,17 @@
+[Unit]
+Description=Production ASP.NET Core Lab
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www/production-lab
+ExecStart=/usr/bin/dotnet /var/www/production-lab/ProductionLab.dll
+Restart=always
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=production-lab
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:8080
+
+[Install]
+WantedBy=multi-user.target

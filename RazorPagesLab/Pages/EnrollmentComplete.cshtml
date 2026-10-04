@@ -1,0 +1,15 @@
+@page "{workshopId:int}"
+@model RazorPagesLab.Pages.EnrollmentCompleteModel
+@{
+    ViewData["Title"] = "Enrollment complete";
+}
+
+<section class="form-card">
+    <p class="eyebrow">Success</p>
+    <h1>Enrollment received</h1>
+    <p>
+        Your enrollment request for <strong>@Model.Workshop?.Title</strong> was
+        accepted by the sample service.
+    </p>
+    <a class="button" asp-page="/Index">Back to workshops</a>
+</section>

@@ -1,0 +1,33 @@
+@model BookDetailsViewModel
+@{
+    ViewData["Title"] = Model.Book.Title;
+}
+
+<article class="detail-card">
+    <p class="eyebrow">Book details</p>
+    <h1>@Model.Book.Title</h1>
+    <p class="muted">By @Model.Book.Author</p>
+    <p>@Model.Book.Summary</p>
+
+    <dl class="facts">
+        <div>
+            <dt>Pages</dt>
+            <dd>@Model.Book.Pages</dd>
+        </div>
+        <div>
+            <dt>Estimated reading time</dt>
+            <dd>@Model.EstimatedReadingHours hour(s)</dd>
+        </div>
+    </dl>
+
+    @if (Model.IsLongRead)
+    {
+        <p class="notice">This is a longer read. Consider planning several sessions.</p>
+    }
+    else
+    {
+        <p class="notice">This is a compact read for a focused study session.</p>
+    }
+
+    <a class="button" asp-controller="Books" asp-action="Index">Back to books</a>
+</article>

@@ -1,0 +1,102 @@
+{
+  "info": {
+    "name": "Phase 14 Advanced Web API",
+    "_postman_id": "0d02a9ec-8f80-4e24-9a2b-5d3e6ce8c014",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5489"
+    }
+  ],
+  "item": [
+    {
+      "name": "OpenAPI contract",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/openapi/v1.json",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "openapi",
+            "v1.json"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Health check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Paged course search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/courses?page=1&pageSize=2&search=core&sort=title",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "courses"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "pageSize",
+              "value": "2"
+            },
+            {
+              "key": "search",
+              "value": "core"
+            },
+            {
+              "key": "sort",
+              "value": "title"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Rate limit request",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/limited",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "limited"
+          ]
+        }
+      }
+    }
+  ]
+}

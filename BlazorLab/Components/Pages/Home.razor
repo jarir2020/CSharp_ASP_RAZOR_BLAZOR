@@ -1,0 +1,77 @@
+@page "/"
+@implements IDisposable
+@inject LearningState LearningState
+
+<PageTitle>Blazor Learning Lab</PageTitle>
+
+<section class="hero">
+    <p class="eyebrow">Interactive Server components</p>
+    <h1>Learn by changing component state</h1>
+    <p>
+        This page demonstrates routing, dependency injection, event handling,
+        parameters, EventCallback, and a scoped state service.
+    </p>
+</section>
+
+<section class="demo-panel">
+    <h2>Event handling and state</h2>
+    <p>Button clicks in this component: <strong>@LearningState.ClickCount</strong></p>
+    <button class="button" type="button" @onclick="IncrementClickCount">
+        Increase count
+    </button>
+
+    @if (LearningState.SelectedCourse is not null)
+    {
+        <p class="notice">
+            Selected course: <strong>@LearningState.SelectedCourse.Title</strong>
+        </p>
+    }
+</section>
+
+<section>
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">Component parameters</p>
+            <h2>Available courses</h2>
+        </div>
+        <a class="button button--secondary" href="enroll">Open enrollment</a>
+    </div>
+
+    <div class="card-grid">
+        @foreach (CourseSummary course in LearningState.Courses)
+        {
+            <CourseCard Course="course" Selected="SelectCourse" />
+        }
+    </div>
+</section>
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Components can subscribe to a service event when shared state changes.
+        LearningState.Changed += RefreshFromState;
+    }
+
+    private void IncrementClickCount()
+    {
+        LearningState.IncrementClickCount();
+    }
+
+    private void SelectCourse(CourseSummary course)
+    {
+        LearningState.SelectCourse(course);
+    }
+
+    private void RefreshFromState()
+    {
+        // InvokeAsync schedules rendering on the component's synchronization
+        // context, even when the event came from another callback.
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe so a discarded component cannot be retained by the service.
+        LearningState.Changed -= RefreshFromState;
+    }
+}

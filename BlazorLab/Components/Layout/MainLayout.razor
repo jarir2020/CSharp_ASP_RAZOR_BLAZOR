@@ -1,0 +1,18 @@
+@inherits LayoutComponentBase
+
+<div class="app-shell">
+    <header class="site-header">
+        <div class="container navigation">
+            <a class="brand" href="">Blazor Learning Lab</a>
+            <NavMenu />
+        </div>
+    </header>
+
+    <main class="container page-content">
+        @Body
+    </main>
+
+    <footer class="container site-footer">
+        <p>Phase 10: Blazor fundamentals</p>
+    </footer>
+</div>

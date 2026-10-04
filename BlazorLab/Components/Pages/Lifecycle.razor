@@ -1,0 +1,42 @@
+@page "/lifecycle"
+
+<PageTitle>Component lifecycle</PageTitle>
+
+<section class="demo-panel">
+    <p class="eyebrow">Lifecycle hooks</p>
+    <h1>Component lifecycle</h1>
+    <p>
+        The message below is set by lifecycle methods in the component's C# code.
+    </p>
+    <ul class="lifecycle-list">
+        @foreach (string entry in LifecycleEvents)
+        {
+            <li>@entry</li>
+        }
+    </ul>
+</section>
+
+@code {
+    private List<string> LifecycleEvents { get; } = new();
+
+    protected override void OnInitialized()
+    {
+        LifecycleEvents.Add("OnInitialized ran");
+    }
+
+    protected override void OnParametersSet()
+    {
+        LifecycleEvents.Add("OnParametersSet ran");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // OnAfterRenderAsync runs after the component has rendered. Refresh
+        // only once after the first render so this does not create a loop.
+        if (firstRender)
+        {
+            LifecycleEvents.Add("OnAfterRenderAsync ran (firstRender: true)");
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+}

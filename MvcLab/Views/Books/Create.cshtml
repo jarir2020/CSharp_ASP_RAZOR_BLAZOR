@@ -1,0 +1,40 @@
+@model BookCreateViewModel
+@{
+    ViewData["Title"] = "Add book";
+}
+
+<section class="form-card">
+    <p class="eyebrow">Model binding and validation</p>
+    <h1>Add a book</h1>
+
+    <form asp-controller="Books" asp-action="Create" method="post">
+        @* A POST form Tag Helper also emits the antiforgery token. *@
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-field">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" autocomplete="off" />
+            <span asp-validation-for="Title" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Author"></label>
+            <input asp-for="Author" autocomplete="off" />
+            <span asp-validation-for="Author" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Pages"></label>
+            <input asp-for="Pages" type="number" min="1" max="2000" />
+            <span asp-validation-for="Pages" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Summary"></label>
+            <textarea asp-for="Summary" rows="5"></textarea>
+            <span asp-validation-for="Summary" class="field-error"></span>
+        </div>
+
+        <button class="button" type="submit">Save book</button>
+    </form>
+</section>

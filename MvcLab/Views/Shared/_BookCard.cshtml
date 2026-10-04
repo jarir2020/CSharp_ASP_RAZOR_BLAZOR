@@ -1,0 +1,11 @@
+@model BookCardViewModel
+
+<article class="card">
+    <p class="eyebrow">@Model.Pages pages</p>
+    <h2>@Model.Title</h2>
+    <p class="muted">By @Model.Author</p>
+    <p>@Model.Summary</p>
+    <a class="button" asp-controller="Books" asp-action="Details" asp-route-id="@Model.Id">
+        View details
+    </a>
+</article>

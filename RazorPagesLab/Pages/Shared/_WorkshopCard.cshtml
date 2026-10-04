@@ -1,0 +1,21 @@
+@model Workshop
+
+<article class="card">
+    <p class="eyebrow">@Model.ScheduledFor.ToString("dd MMM yyyy")</p>
+    <h2>@Model.Title</h2>
+    <p>@Model.Description</p>
+
+    @if (Model.SeatsRemaining > 0)
+    {
+        <p class="status status--available">
+            @Model.SeatsRemaining seat(s) available
+        </p>
+        <a class="button" asp-page="/Enroll" asp-route-workshopId="@Model.Id">
+            Enroll
+        </a>
+    }
+    else
+    {
+        <p class="status status--full">This workshop is full.</p>
+    }
+</article>

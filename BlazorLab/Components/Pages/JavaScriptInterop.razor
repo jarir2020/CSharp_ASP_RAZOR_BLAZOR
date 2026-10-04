@@ -1,0 +1,202 @@
+@page "/interop"
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<PageTitle>JavaScript interop</PageTitle>
+
+<section class="hero">
+    <p class="eyebrow">C# and browser APIs</p>
+    <h1>JavaScript interop</h1>
+    <p>
+        This page imports a JavaScript module, calls browser APIs from C#, and
+        lets JavaScript call a .NET instance method.
+    </p>
+</section>
+
+<section class="demo-panel">
+    <h2>Call JavaScript from C#</h2>
+    <div class="button-row">
+        <button class="button" type="button" @onclick="ReadBrowserInfoAsync" disabled="@(!_ready)">
+            Read browser info
+        </button>
+        <button class="button button--secondary" type="button" @onclick="FocusNoteAsync" disabled="@(!_ready)">
+            Focus note
+        </button>
+    </div>
+
+    @if (_browserSnapshot is not null)
+    {
+        <dl class="facts">
+            <div>
+                <dt>Viewport</dt>
+                <dd>@_browserSnapshot.Width x @_browserSnapshot.Height</dd>
+            </div>
+            <div>
+                <dt>User agent</dt>
+                <dd class="break-word">@_browserSnapshot.UserAgent</dd>
+            </div>
+        </dl>
+    }
+</section>
+
+<section class="demo-panel">
+    <h2>Browser storage and clipboard</h2>
+    <div class="form-field">
+        <label for="interop-note">Note stored in localStorage</label>
+        <input id="interop-note" class="form-control" @bind="_note" @bind:event="oninput" />
+    </div>
+    <div class="button-row">
+        <button class="button" type="button" @onclick="SaveNoteAsync" disabled="@(!_ready)">
+            Save note
+        </button>
+        <button class="button button--secondary" type="button" @onclick="LoadNoteAsync" disabled="@(!_ready)">
+            Load note
+        </button>
+        <button class="button button--secondary" type="button" @onclick="CopyNoteAsync" disabled="@(!_ready)">
+            Copy note
+        </button>
+    </div>
+    @if (_storageMessage is not null)
+    {
+        <p class="notice notice--success">@_storageMessage</p>
+    }
+</section>
+
+<section class="demo-panel">
+    <h2>JavaScript calling C#</h2>
+    <p>
+        The imported module calls a .NET object every second. Current browser
+        time: <strong>@(_browserTime ?? "Waiting for the first callback...")</strong>
+    </p>
+</section>
+
+@code {
+    private const string NoteStorageKey = "blazor-lab-interop-note";
+
+    private IJSObjectReference? _module;
+    private DotNetObjectReference<BrowserClockReceiver>? _dotNetReference;
+    private BrowserClockReceiver? _clockReceiver;
+    private int? _clockTimerId;
+    private BrowserSnapshot? _browserSnapshot;
+    private string _note = "Interop makes browser APIs available to components.";
+    private string? _browserTime;
+    private string? _storageMessage;
+    private bool _ready;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        // JS interop is unavailable during static prerendering, so import the
+        // module only after the interactive browser connection is established.
+        _module = await JS.InvokeAsync<IJSObjectReference>(
+            "import",
+            "./js/interop.js");
+
+        _clockReceiver = new BrowserClockReceiver();
+        _clockReceiver.TimeReceived += ReceiveBrowserTime;
+        _dotNetReference = DotNetObjectReference.Create(_clockReceiver);
+        _clockTimerId = await _module.InvokeAsync<int>("startClock", _dotNetReference);
+        _ready = true;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ReadBrowserInfoAsync()
+    {
+        if (_module is null)
+        {
+            return;
+        }
+
+        _browserSnapshot = await _module.InvokeAsync<BrowserSnapshot>("getBrowserSnapshot");
+    }
+
+    private async Task FocusNoteAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("focusElement", "interop-note");
+        }
+    }
+
+    private async Task SaveNoteAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("saveNote", NoteStorageKey, _note);
+            _storageMessage = "The note was saved in this browser.";
+        }
+    }
+
+    private async Task LoadNoteAsync()
+    {
+        if (_module is not null)
+        {
+            _note = await _module.InvokeAsync<string?>("loadNote", NoteStorageKey) ?? string.Empty;
+            _storageMessage = "The note was loaded from this browser.";
+        }
+    }
+
+    private async Task CopyNoteAsync()
+    {
+        if (_module is not null)
+        {
+            try
+            {
+                bool copied = await _module.InvokeAsync<bool>("copyText", _note);
+                _storageMessage = copied
+                    ? "The note was copied to the clipboard."
+                    : "The browser did not allow clipboard access.";
+            }
+            catch (JSException)
+            {
+                // Clipboard permission failures are browser decisions, not
+                // application failures, so keep the component usable.
+                _storageMessage = "Clipboard access was denied by the browser.";
+            }
+        }
+    }
+
+    private void ReceiveBrowserTime(string currentTime)
+    {
+        // JS callbacks may arrive outside the component's normal event handler.
+        _ = InvokeAsync(() =>
+        {
+            _browserTime = currentTime;
+            StateHasChanged();
+        });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_clockReceiver is not null)
+        {
+            _clockReceiver.TimeReceived -= ReceiveBrowserTime;
+        }
+
+        try
+        {
+            if (_module is not null && _clockTimerId is not null)
+            {
+                await _module.InvokeVoidAsync("stopClock", _clockTimerId.Value);
+            }
+
+            if (_module is not null)
+            {
+                await _module.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+            // A disconnected circuit has already lost its browser connection.
+        }
+        finally
+        {
+            _dotNetReference?.Dispose();
+        }
+    }
+}

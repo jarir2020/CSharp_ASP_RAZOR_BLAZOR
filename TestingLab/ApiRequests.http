@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:5489
+
+### OpenAPI contract
+GET {{baseUrl}}/openapi/v1.json
+
+### Health check
+GET {{baseUrl}}/health
+
+### Versioned, filtered, sorted, paged API
+GET {{baseUrl}}/api/v1/courses?page=1&pageSize=2&search=core&sort=title
+
+### Version 2 response
+GET {{baseUrl}}/api/v2/courses?search=advanced
+
+### Rate-limit exercise: send this request three times inside 30 seconds
+GET {{baseUrl}}/api/v1/limited

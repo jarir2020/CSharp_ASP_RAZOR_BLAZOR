@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "AdvancedWebLab.Grpc";
+
+package course;
+
+service CourseCatalog {
+  rpc GetCourse (CourseRequest) returns (CourseReply);
+}
+
+message CourseRequest {
+  int32 id = 1;
+}
+
+message CourseReply {
+  int32 id = 1;
+  string title = 2;
+  string level = 3;
+}

@@ -1,0 +1,28 @@
+@page
+@model RazorPagesLab.Pages.IndexModel
+@{
+    ViewData["Title"] = "Workshops";
+}
+
+<section class="hero">
+    <p class="eyebrow">Server-rendered with C#</p>
+    <h1>@Model.Heading</h1>
+    <p>
+        This page demonstrates Razor expressions, conditions, loops, layouts,
+        partial views, and Tag Helpers.
+    </p>
+</section>
+
+@if (Model.Workshops.Count == 0)
+{
+    <p>No workshops are scheduled.</p>
+}
+else
+{
+    <section class="card-grid" aria-label="Upcoming workshops">
+        @foreach (Workshop workshop in Model.Workshops)
+        {
+            <partial name="_WorkshopCard" model="workshop" />
+        }
+    </section>
+}

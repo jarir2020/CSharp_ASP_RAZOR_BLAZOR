@@ -1,0 +1,37 @@
+name: Production Lab CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore CSharpCore.Tests/CSharpCore.Tests.csproj
+
+      - name: Build
+        run: dotnet build CSharpCore.Tests/CSharpCore.Tests.csproj --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test CSharpCore.Tests/CSharpCore.Tests.csproj --configuration Release --no-build --logger trx
+
+      - name: Publish production lab
+        run: dotnet publish ProductionLab/ProductionLab.csproj --configuration Release --output artifacts/production-lab --no-restore
+
+      - name: Upload publish artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-lab
+          path: artifacts/production-lab

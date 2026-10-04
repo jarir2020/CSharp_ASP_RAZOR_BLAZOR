@@ -1,0 +1,13 @@
+services:
+  production-lab:
+    build:
+      context: .
+      dockerfile: ProductionLab/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      # Compose reads this value from the host environment. Do not commit the
+      # secret or place it in this file.
+      Production__ExternalApiKey:
+    restart: unless-stopped
